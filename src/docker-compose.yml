@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  app:
+    build: ./info-server
+    ports: 
+      - "3000"
+    volumes:
+      - type: bind
+        source: ./info-server/scripts/app.js
+        target: /app/app.js
+    networks:
+      localnet:
+        aliases:
+          - app
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - type: bind
+        source: ./prometheus/etc/prometheus.yml
+        target: /etc/prometheus/prometheus.yml
+    networks:
+      localnet:
+
+networks:
+  localnet:
+

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd src/info-server/
+docker build . -t prom-spike-app-image

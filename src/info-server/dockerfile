@@ -1,0 +1,6 @@
+FROM node:latest
+RUN mkdir /app
+COPY scripts/app.js /app/app.js
+COPY entrypoint.sh /app/entrypoint.sh
+EXPOSE 3000
+ENTRYPOINT /app/entrypoint.sh
