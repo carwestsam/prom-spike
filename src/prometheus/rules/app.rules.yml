@@ -1,0 +1,19 @@
+groups:
+- name: exceed
+  rules:
+  - alert: InstanceDown
+    expr: up == 0
+    for: 1m    #持续时间
+    labels:
+      serverity: page
+    annotations:
+      summary: "Instance {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
+  
+  - alert: LowRequestRate
+    expr: app_melt_volt < 0.1
+    for: 10s
+    labels:
+      severity: warning
+    annotations:
+      summary: Low request rate

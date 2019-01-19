@@ -4,7 +4,7 @@ services:
   app:
     build: ./info-server
     ports:
-      - "3000"
+      - "3000:3000"
     volumes:
       - type: bind
         source: ./info-server/scripts/app.js
@@ -23,6 +23,7 @@ services:
       - type: bind
         source: ./prometheus/etc/prometheus.yml
         target: /etc/prometheus/prometheus.yml
+      - ./prometheus/rules/app.rules.yml:/etc/prometheus/rules/app.rules.yml
       - type: bind
         source: ../storage/prometheus
         target: /etc/prometheus/data/
