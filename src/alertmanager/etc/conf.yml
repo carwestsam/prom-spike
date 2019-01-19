@@ -1,0 +1,17 @@
+global:
+  # The smarthost and SMTP sender used for mail notifications.
+  smtp_smarthost: ''  #这里是指smtp的服务器
+  smtp_from: ''  # 邮箱from地址，一般写邮箱的用户名
+  smtp_auth_username: ''  #邮箱的用户名
+  smtp_auth_password: ''    #邮箱的密码
+  smtp_require_tls: false   # 这个配置了true导致没有报错，最后我设置成了false正常了
+route:
+  group_by: ['host','id','type']
+  group_wait: 30s
+  group_interval: 30s
+  repeat_interval: 1h
+  receiver: 'test-mails'
+receivers:
+- name: 'test-mails'
+  email_configs:
+  - to: ""

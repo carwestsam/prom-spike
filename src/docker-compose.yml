@@ -35,6 +35,19 @@ services:
       start_period: 10s
     networks:
       localnet:
+    
+  altermanager:
+    image: prom/alertmanager:master
+    volumes:
+      - ./alertmanager/etc/config.yml:/etc/alertmanager/config.yml
+      - ../storage/alertmanager:/altermanager
+    ports:
+      - "9093:9093"
+    command:
+      - -config.file=/etc/alertmanager/config.yml
+      - -storage.path=/alertmanager
+    networks:
+      localnet:
 
 networks:
   localnet:

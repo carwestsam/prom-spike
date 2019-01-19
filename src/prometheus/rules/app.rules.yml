@@ -3,7 +3,7 @@ groups:
   rules:
   - alert: InstanceDown
     expr: up == 0
-    for: 1m    #持续时间
+    for: 1m
     labels:
       serverity: page
     annotations:
