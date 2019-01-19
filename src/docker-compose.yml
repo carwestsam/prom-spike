@@ -1,9 +1,9 @@
-version: '3.7'
+version: "3.7"
 
 services:
   app:
     build: ./info-server
-    ports: 
+    ports:
       - "3000"
     volumes:
       - type: bind
@@ -13,17 +13,27 @@ services:
       localnet:
         aliases:
           - app
+
   prometheus:
     image: prom/prometheus:latest
     ports:
       - "9090:9090"
+    restart: unless-stopped
     volumes:
       - type: bind
         source: ./prometheus/etc/prometheus.yml
         target: /etc/prometheus/prometheus.yml
+      - type: bind
+        source: ../storage/prometheus
+        target: /etc/prometheus/data/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090"]
+      interval: 10s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
     networks:
       localnet:
 
 networks:
   localnet:
-
