@@ -30,3 +30,7 @@ scrape_configs:
     scrape_interval: 2s
     static_configs:
       - targets: ["app:3000"]
+  - job_name: "python-example"
+    scrape_interval: 2s
+    static_configs:
+      - targets: ["info-reader:5000"]

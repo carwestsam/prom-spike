@@ -16,6 +16,8 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
+    depends_on:
+      - alertmanager
     ports:
       - "9090:9090"
     restart: unless-stopped
@@ -27,27 +29,76 @@ services:
       - type: bind
         source: ../storage/prometheus
         target: /etc/prometheus/data/
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9090"]
-      interval: 10s
-      timeout: 5s
-      retries: 2
-      start_period: 10s
     networks:
       localnet:
-    
-  altermanager:
+  
+  alertmanager:
     image: prom/alertmanager:master
     volumes:
-      - ./alertmanager/etc/config.yml:/etc/alertmanager/config.yml
-      - ../storage/alertmanager:/altermanager
+      - ./alertmanager/etc/conf.yml:/etc/alertmanager/config.yml
+      - ../storage/alertmanager:/alertmanager
     ports:
       - "9093:9093"
     command:
-      - -config.file=/etc/alertmanager/config.yml
-      - -storage.path=/alertmanager
+      - --config.file=/etc/alertmanager/config.yml
+      - --storage.path=/alertmanager
     networks:
       localnet:
+  
+  info-middleware:
+    image: mongo
+    ports:
+      - '27017:27017'
+    networks:
+      localnet:
+  
+  info-reader:
+    build: ./python-demo-server
+    ports:
+      - '5000'
+    environment:
+      mongo_host: info-middleware
+      mongo_port: 27017
+    volumes:
+      - ./python-demo-server/mongo_reader.py:/data/app.py
+    working_dir: /data
+    command: flask run --host=0.0.0.0
+    networks:
+      localnet:
+
+  python-app1:
+    depends_on:
+      - info-middleware
+    build: ./python-demo-server
+    environment:
+      ip: 1.1.1.1
+      mongo_host: info-middleware
+      mongo_port: 27017
+    volumes:
+      - ./python-demo-server/__init__.py:/data/__init__.py
+      - ./python-demo-server/app.py:/data/app.py
+      - ./python-demo-server/mongo_sender.py:/data/mongo_sender.py
+    networks:
+      localnet:
+    working_dir: /data
+    command: python /data/app.py
+
+  python-app2:
+    depends_on:
+      - info-middleware
+    build: ./python-demo-server
+    environment:
+      ip: 2.2.2.2
+      mongo_host: info-middleware
+      mongo_port: 27017
+    volumes:
+      - ./python-demo-server/__init__.py:/data/__init__.py
+      - ./python-demo-server/app.py:/data/app.py
+      - ./python-demo-server/mongo_sender.py:/data/mongo_sender.py
+    networks:
+      localnet:
+    working_dir: /data
+    command: python /data/app.py
 
 networks:
   localnet:
