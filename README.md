@@ -6,3 +6,5 @@ create a prometheus server, should ready for deploy
 
 - app: server need to be monitored
 - prometheus: monitor server
+- alertmanager: alert pusher
+- python demo server

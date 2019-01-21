@@ -1,2 +1,3 @@
 storage/*
 *.pyc
+src/alertmanager/etc/conf.yml

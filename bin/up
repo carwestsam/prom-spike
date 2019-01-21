@@ -1,4 +1,10 @@
 #!/bin/bash
 
+source bin/lib/util
+
+if [ "x$machine" == "xLinux" ]; then
+    sudo chown nobody:65534 storage/prometheus/
+fi
+
 cd src
 sudo docker-compose up
