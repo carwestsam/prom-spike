@@ -1,0 +1,57 @@
+version: "3.4"
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    depends_on:
+      - alertmanager
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: ./prometheus/etc/prometheus.yml
+        target: /etc/prometheus/prometheus.yml
+      - ./prometheus/rules/app.rules.yml:/etc/prometheus/rules/app.rules.yml
+      - type: bind
+        source: ../storage/prometheus
+        target: /etc/prometheus/data/
+    networks:
+      localnet:
+  
+  alertmanager:
+    image: prom/alertmanager:master
+    volumes:
+      - ./alertmanager/etc/conf.yml:/etc/alertmanager/config.yml
+      - ../storage/alertmanager:/alertmanager
+    ports:
+      - "9093:9093"
+    command:
+      - --config.file=/etc/alertmanager/config.yml
+      - --storage.path=/alertmanager
+    networks:
+      localnet:
+  
+  info-middleware:
+    image: mongo
+    ports:
+      - '27017:27017'
+    networks:
+      localnet:
+  
+  info-reader:
+    build: ./python-demo-server
+    ports:
+      - '5000'
+    environment:
+      mongo_host: info-middleware
+      mongo_port: 27017
+    volumes:
+      - ./python-demo-server/mongo_reader.py:/data/app.py
+    working_dir: /data
+    command: flask run --host=0.0.0.0
+    networks:
+      localnet:
+
+networks:
+  localnet:

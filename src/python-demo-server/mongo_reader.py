@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import os
 import datetime
 
-col = MongoClient(os.environ['mongo_host'], int(os.environ['mongo_port']))['info']['app_info']
+col = MongoClient(os.environ['mongo_host'], int(os.environ['mongo_port']))['metrics']['app_metrics']
 
 from flask import Flask
 app = Flask(__name__)

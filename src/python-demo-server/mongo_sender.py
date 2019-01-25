@@ -160,7 +160,7 @@ monitoring.register(TopologyLogger())
 
 
 class Sender:
-    def __init__(self, server='localhost', port=27017, db='info'):
+    def __init__(self, server='localhost', port=27017, db='metrics'):
         self.client = None
         self.db = None
         self.import_mongodb(server, port)
@@ -171,7 +171,7 @@ class Sender:
         self.db = self.client[db_name]
         print('select db ', db_name, 'finished')
 
-    def update(self, infos, collection='app_info'):
+    def update(self, infos, collection='app_metrics'):
         # print('start update with value', TopologyLogger.healthly)
         if TopologyLogger.healthly is True:
             infos.update(self.db[collection])
@@ -194,9 +194,7 @@ class Sender:
 
 
 if __name__ == '__main__':
-    sender = Sender()
-    sender.import_mongodb('localhost')
-    sender.chose_db('info')
+    sender = Sender(server='localhost', port=27017, db='metrics')
 
     # name and value are mandatory for each Info
 
