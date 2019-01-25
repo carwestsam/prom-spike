@@ -205,7 +205,7 @@ if __name__ == '__main__':
 
     # compose different dimensions to infos
     # second parameter of MetricList is Instance Info, will add to all Infos
-    infos = metricList([order_large, order_small], {"instance": "1.1.1.1", 'env': 'prod'})
+    infos = MetricList([order_large, order_small], {"instance": "1.1.1.1", 'env': 'prod'})
     sender.update(infos)
 
     # update state, and push to sender
