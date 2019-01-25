@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import os
+import datetime
 
 col = MongoClient(os.environ['mongo_host'], int(os.environ['mongo_port']))['info']['app_info']
 
@@ -10,5 +11,11 @@ app = Flask(__name__)
 def hello_world():
     result = ''
     for record in col.find():
-        result += record['key'] + ' ' + record['value'] + '\n'
+        last_modified = record['last_modified']
+        time_differ = (datetime.datetime.utcnow() - last_modified).seconds
+        if time_differ <= 2:
+            result += record['key'] + ' ' + record['value'] + '\n'
     return result
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')

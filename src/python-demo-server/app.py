@@ -1,4 +1,4 @@
-from mongo_sender import Info, InfoList, Sender
+from mongo_sender import Metric, MetricList, Sender
 import time
 import random
 import os
@@ -6,14 +6,14 @@ import math
 
 if __name__ == '__main__':
     time.sleep(4)
-    pending_orders = Info('pending_orders', 123, {'prop':'0.1'})
-    accepted_orders = Info('accepted_orders', 23, {'prop':'0.2'})
-    failed_orders = Info('failed_orders', 19, {'prop': '0.3'})
+    pending_orders = Metric('pending_orders', 123, {'prop':'0.1'})
+    accepted_orders = Metric('accepted_orders', 23, {'prop':'0.2'})
+    failed_orders = Metric('failed_orders', 19, {'prop': '0.3'})
     
-    instanceProps = {'ip': os.environ['ip'], 'env': 'prod'}
+    instanceProps = {'ip': os.getenv('ip', '127.0.0.1'), 'env': os.getenv('env', 'local')}
 
-    infos = InfoList([pending_orders, accepted_orders, failed_orders], instanceProps)
-    sender = Sender(os.environ['mongo_host'], int(os.environ['mongo_port']))
+    metrics = MetricList([pending_orders, accepted_orders, failed_orders], instanceProps)
+    sender = Sender(os.getenv('mongo_host', 'localhost'), int(os.getenv('mongo_port','27017')))
 
     TOTAL = 1200
     t = random.randint(0, 10)
@@ -34,4 +34,4 @@ if __name__ == '__main__':
         accepted_orders.set_value(accepted)
         failed_orders.set_value(failed)
         
-        sender.update(infos)
+        sender.update(metrics)
