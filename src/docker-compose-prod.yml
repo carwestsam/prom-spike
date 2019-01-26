@@ -38,7 +38,8 @@ services:
       - '27017:27017'
     networks:
       localnet:
-  
+    command: 'mongod --bind_ip_all'
+
   info-reader:
     build: ./python-demo-server
     ports:
