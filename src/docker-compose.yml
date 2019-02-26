@@ -99,6 +99,19 @@ services:
       localnet:
     working_dir: /data
     command: python /data/app.py
+  
+  grafana:
+    depends_on:
+      - prometheus
+    image: grafana/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: secret
+    volumes:
+      - ../storage/grafana:/var/lib/grafana
+    ports:
+      - "4000:3000"
+    networks:
+      localnet:
 
 networks:
   localnet:

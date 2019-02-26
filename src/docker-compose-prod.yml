@@ -36,6 +36,9 @@ services:
     image: mongo
     ports:
       - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: rootuser
+      MONGO_INITDB_ROOT_PASSWORD: 123456
     networks:
       localnet:
     command: 'mongod --bind_ip_all'
@@ -51,6 +54,19 @@ services:
       - ./python-demo-server/mongo_reader.py:/data/app.py
     working_dir: /data
     command: flask run --host=0.0.0.0
+    networks:
+      localnet:
+  
+  grafana:
+    depends_on:
+      - prometheus
+    image: grafana/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: secret
+    volumes:
+      - ../storage/grafana:/var/lib/grafana
+    ports:
+      - "4000:3000"
     networks:
       localnet:
 
